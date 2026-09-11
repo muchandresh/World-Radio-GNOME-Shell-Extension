@@ -2,7 +2,9 @@
 <p align="center">
   <img src="banner.png" alt="Vibe Map Banner" width="100%" style="border-radius: 12px; box-shadow: 0 20px 30px rgba(0,0,0,0.5);">
 </p>
+
 # World Radio (GNOME Shell Extension)
+
 [![GNOME Shell](https://img.shields.io/badge/GNOME%20Shell-45%20%7C%2046%20%7C%2047%20%7C%2048%20%7C%2049%20%7C%2050-blue.svg)](https://extensions.gnome.org/)
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL%203.0-green.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Linux%20%2F%20Wayland%20%26%20X11-orange.svg)]()
