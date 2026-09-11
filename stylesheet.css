@@ -1,0 +1,188 @@
+/* World Radio GNOME Shell Extension Stylesheet
+ * Warm retro-modern 9:16 card design matching reference image
+ */
+
+.world-radio-panel-icon {
+    icon-size: 16px;
+}
+
+.world-radio-panel-box {
+    spacing: 4px;
+}
+
+.world-radio-panel-label {
+    font-weight: bold;
+    font-size: 11px;
+}
+
+/* 9:16 Aspect Ratio Popup Window */
+.world-radio-card {
+    background-color: #e5c799;
+    border-radius: 20px;
+    width: 350px;
+    height: 620px;
+    padding: 16px;
+    color: #1e1e1e;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+}
+
+.world-radio-header {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.world-radio-title {
+    font-size: 24px;
+    font-weight: 900;
+    color: #1a1a1a;
+    letter-spacing: -0.5px;
+}
+
+.world-radio-subtitle-box {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.world-radio-dot {
+    font-size: 12px;
+    margin-right: 6px;
+}
+
+.world-radio-status-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: #222222;
+}
+
+.world-radio-genre-text {
+    font-size: 11px;
+    color: #555555;
+    margin-top: 2px;
+}
+
+/* Followed Stations Quick Bar */
+.world-radio-fav-container {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    background-color: rgba(0, 0, 0, 0.04);
+    border-radius: 10px;
+    padding: 6px 8px;
+}
+
+.world-radio-fav-title {
+    font-size: 9px;
+    font-weight: 800;
+    color: #665b4c;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.world-radio-fav-pills {
+    spacing: 4px;
+}
+
+.world-radio-fav-pill {
+    padding: 3px 6px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    transition: all 150ms ease-in-out;
+}
+
+.world-radio-fav-pill.active {
+    background-color: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #1a1a1a;
+}
+
+.world-radio-fav-pill.active:hover {
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+.world-radio-fav-pill.empty {
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px dashed rgba(0, 0, 0, 0.2);
+    color: #666666;
+}
+
+.world-radio-fav-pill.empty:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.world-radio-fav-pill-label {
+    font-size: 10px;
+    font-weight: 700;
+}
+
+/* Globe Container */
+.world-radio-globe-box {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+/* Media Controls Bar */
+.world-radio-controls-box {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+/* Big Circular Play/Pause Button (matching reference image) */
+.world-radio-play-btn {
+    width: 58px;
+    height: 58px;
+    border-radius: 29px;
+    border: 2px solid #1a1a1a;
+    background-color: rgba(255, 255, 255, 0.15);
+    transition: all 150ms ease-in-out;
+}
+
+.world-radio-play-btn:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+    border-color: #000000;
+}
+
+.world-radio-play-btn:active {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.world-radio-action-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 17px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    transition: all 150ms ease-in-out;
+}
+
+.world-radio-action-btn:hover {
+    background-color: rgba(0, 0, 0, 0.12);
+}
+
+.world-radio-action-btn:active {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.world-radio-action-btn.fav-active {
+    background-color: #f7b731;
+    border-color: #d69415;
+    color: #ffffff;
+}
+
+/* Volume Bar */
+.world-radio-volume-box {
+    margin-top: 6px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.world-radio-volume-icon {
+    icon-size: 14px;
+    color: #333333;
+    margin-right: 8px;
+}
+
+.world-radio-footer-label {
+    font-size: 10px;
+    color: #666666;
+    margin-top: 4px;
+}

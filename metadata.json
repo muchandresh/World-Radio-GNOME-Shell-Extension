@@ -1,0 +1,15 @@
+{
+  "name": "World Radio",
+  "description": "Interactive 3D rotating globe for live radio streaming worldwide",
+  "uuid": "world-radio@chanduu",
+  "shell-version": [
+    "45",
+    "46",
+    "47",
+    "48",
+    "49",
+    "50"
+  ],
+  "url": "https://github.com/chanduu/world-radio",
+  "version": 1
+}
