@@ -31,13 +31,16 @@ export const RadioPlayer = GObject.registerClass({
         this._state = PlayState.STOPPED;
         this._volume = 0.8;
         this._isUserPaused = false;
-        this._ensureGst();
+        this._gstInitialized = false;
     }
 
     _ensureGst() {
-        if (!Gst.is_initialized()) {
+        if (!this._gstInitialized) {
             try {
-                Gst.init(null);
+                if (!Gst.is_initialized()) {
+                    Gst.init(null);
+                }
+                this._gstInitialized = true;
             } catch (e) {
                 console.error('[WorldRadio] Gst init error:', e);
             }
@@ -90,6 +93,7 @@ export const RadioPlayer = GObject.registerClass({
         this._isUserPaused = false;
         this._setState(PlayState.BUFFERING);
 
+        this._ensureGst();
         try {
             this._pipeline = Gst.ElementFactory.make('playbin', 'world-radio-player');
             if (!this._pipeline) {

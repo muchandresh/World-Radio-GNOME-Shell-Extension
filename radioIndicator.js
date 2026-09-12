@@ -51,14 +51,20 @@ export const WorldRadioIndicator = GObject.registerClass({
             }
         });
 
+        this._onlineDataLoaded = false;
+
         // Track menu open to adjust position based on panel location (top/bottom)
         this.menu.connect('open-state-changed', (menu, isOpen) => {
             if (isOpen) {
                 this._adjustMenuPosition();
+                this._globeView?.setActive(true);
+                this._lazyLoadOnlineData();
+            } else {
+                this._globeView?.setActive(false);
             }
         });
 
-        // Initialize geolocation & stations
+        // Initialize local stations
         GLib.idle_add(GLib.PRIORITY_DEFAULT_IDLE, () => {
             this._initData();
             return GLib.SOURCE_REMOVE;
@@ -66,23 +72,31 @@ export const WorldRadioIndicator = GObject.registerClass({
     }
 
     _adjustMenuPosition() {
-        const [stageX, stageY] = this.get_transformed_position();
-        const [width, height] = this.get_transformed_size();
-        const monitor = Main.layoutManager.findMonitorForActor(this) || Main.layoutManager.primaryMonitor;
+        try {
+            const [stageX, stageY] = this.get_transformed_position();
+            const [width, height] = this.get_transformed_size();
+            const monitor = Main.layoutManager.findMonitorForActor(this) || Main.layoutManager.primaryMonitor;
 
-        const centerY = stageY + height / 2;
-        const isBottom = centerY > (monitor.y + monitor.height / 2);
+            const centerY = stageY + height / 2;
+            const isBottom = centerY > (monitor.y + monitor.height / 2);
 
-        if (this.menu && this.menu._boxPointer) {
-            this.menu._boxPointer.sourceActor = this;
-            if (isBottom) {
-                this.menu._boxPointer._userArrowSide = St.Side.BOTTOM;
-                this.menu._arrowSide = St.Side.BOTTOM;
-            } else {
-                this.menu._boxPointer._userArrowSide = St.Side.TOP;
-                this.menu._arrowSide = St.Side.TOP;
+            if (this.menu && this.menu._boxPointer) {
+                this.menu._boxPointer.sourceActor = this;
+                if (isBottom) {
+                    this.menu._boxPointer._userArrowSide = St.Side.BOTTOM;
+                    this.menu._arrowSide = St.Side.BOTTOM;
+                } else {
+                    this.menu._boxPointer._userArrowSide = St.Side.TOP;
+                    this.menu._arrowSide = St.Side.TOP;
+                }
+                if (typeof this.menu.setSourceAlignment === 'function') {
+                    this.menu.setSourceAlignment(0.5);
+                } else if (typeof this.menu._boxPointer.setSourceAlignment === 'function') {
+                    this.menu._boxPointer.setSourceAlignment(0.5);
+                }
             }
-            this.setSourceAlignment(0.5);
+        } catch (e) {
+            console.warn('[WorldRadio] Error adjusting menu position:', e.message);
         }
     }
 
@@ -117,12 +131,6 @@ export const WorldRadioIndicator = GObject.registerClass({
         box.add_child(this._panelLabel);
 
         this.add_child(box);
-
-        // Adjust position right before opening when clicked
-        this.connect('button-press-event', () => {
-            this._adjustMenuPosition();
-            return Clutter.EVENT_PROPAGATE;
-        });
     }
 
     _buildPopupMenu() {
@@ -365,6 +373,17 @@ export const WorldRadioIndicator = GObject.registerClass({
     _initData() {
         this._globeView.setStations(this._service.stations);
         this._renderFavoritePills();
+        this._footerLabel.set_text('World Radio • Drag to spin, scroll to zoom');
+
+        // Select default first station for UI display
+        if (this._service.stations.length > 0) {
+            this._selectStationOnly(this._service.stations[0]);
+        }
+    }
+
+    _lazyLoadOnlineData() {
+        if (this._onlineDataLoaded) return;
+        this._onlineDataLoaded = true;
 
         this._service.detectLocation((err, loc) => {
             if (!err && loc) {
@@ -376,8 +395,6 @@ export const WorldRadioIndicator = GObject.registerClass({
                 if (nearest) {
                     this._selectStationOnly(nearest);
                 }
-            } else {
-                this._footerLabel.set_text('World Radio • Drag to spin, scroll to zoom');
             }
         });
 
@@ -588,8 +605,13 @@ export const WorldRadioIndicator = GObject.registerClass({
             this._player = null;
         }
         if (this._globeView) {
+            this._globeView.setActive(false);
             this._globeView.destroy();
             this._globeView = null;
+        }
+        if (this._service) {
+            this._service.destroy();
+            this._service = null;
         }
         super.destroy();
     }

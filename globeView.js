@@ -61,14 +61,30 @@ export const GlobeView = GObject.registerClass({
         this._animTimerId = null;
         this._pulseTimerId = null;
         this._pulsePhase = 0;
+        this._isActive = false;
 
         // Connect events
+        this.connect('destroy', this._onDestroy.bind(this));
         this.connect('repaint', this._onRepaint.bind(this));
         this.connect('button-press-event', this._onButtonPress.bind(this));
         this.connect('motion-event', this._onMotion.bind(this));
         this.connect('button-release-event', this._onButtonRelease.bind(this));
         this.connect('scroll-event', this._onScroll.bind(this));
         this.connect('leave-event', this._onLeave.bind(this));
+    }
+
+    setActive(active) {
+        this._isActive = !!active;
+        if (!this._isActive) {
+            this._stopPulsing();
+            if (this._animTimerId) {
+                GLib.source_remove(this._animTimerId);
+                this._animTimerId = null;
+            }
+        } else if (this._selectedStation) {
+            this._startPulsing();
+        }
+        this.queue_repaint();
     }
 
     setStations(stations) {
@@ -78,7 +94,7 @@ export const GlobeView = GObject.registerClass({
 
     setSelectedStation(station) {
         this._selectedStation = station;
-        if (station) {
+        if (station && this._isActive) {
             this._startPulsing();
         } else {
             this._stopPulsing();
@@ -132,8 +148,13 @@ export const GlobeView = GObject.registerClass({
     }
 
     _startPulsing() {
+        if (!this._isActive) return;
         if (this._pulseTimerId) return;
         this._pulseTimerId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 70, () => {
+            if (!this._isActive) {
+                this._pulseTimerId = null;
+                return GLib.SOURCE_REMOVE;
+            }
             this._pulsePhase = (this._pulsePhase + 0.15) % (2 * Math.PI);
             this.queue_repaint();
             return GLib.SOURCE_CONTINUE;
@@ -334,10 +355,10 @@ export const GlobeView = GObject.registerClass({
 
     _onRepaint(area) {
         const cr = this.get_context();
-        const [width, height] = this.get_surface_size();
+        if (!cr) return;
 
+        const [width, height] = this.get_surface_size();
         if (width <= 0 || height <= 0) {
-            cr.$dispose();
             return;
         }
 
@@ -511,8 +532,6 @@ export const GlobeView = GObject.registerClass({
         if (hoveredProj && hoveredProj.z > 0.04) {
             this._drawTooltip(cr, hoveredProj.x, hoveredProj.y, hoveredProj.station, width, height);
         }
-
-        cr.$dispose();
     }
 
     _drawTooltip(cr, tx, ty, station, viewWidth, viewHeight) {
@@ -591,12 +610,17 @@ export const GlobeView = GObject.registerClass({
         cr.restore();
     }
 
-    destroy() {
+    _onDestroy() {
+        this._isActive = false;
         if (this._animTimerId) {
             GLib.source_remove(this._animTimerId);
             this._animTimerId = null;
         }
         this._stopPulsing();
+    }
+
+    destroy() {
+        this._onDestroy();
         super.destroy();
     }
 });

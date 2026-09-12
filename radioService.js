@@ -144,7 +144,6 @@ export class RadioService {
             this._stations[18], // FIP Radio
             this._stations[32], // Radio Mirchi
         ];
-        this.saveFavorites();
     }
 
     saveFavorites() {
@@ -320,5 +319,14 @@ export class RadioService {
         }
 
         return nearest;
+    }
+
+    destroy() {
+        if (this._session) {
+            try {
+                this._session.abort();
+            } catch (e) {}
+            this._session = null;
+        }
     }
 }
